@@ -24,6 +24,9 @@ main() {
     s)
       print_sql_file
       ;;
+    S)
+      edit_sql_file
+      ;;
     q)
       echo "Quitting db.sh"
       return 0
@@ -39,6 +42,10 @@ select_all() {
   sqlite3 bountyhunter.db "SELECT * FROM programs"
 }
 
+edit_sql_file() {
+  vim target_db.sql
+}
+
 eval_db_command() {
   db_cmd="$@"
   eval 'sqlite3 bountyhunter.db "$sql_cmd"'
@@ -49,6 +56,7 @@ hermit_crab_help() {
   echo "e   - eval exact SQL command"
   echo "h/? - print this help text"
   echo "s   - print target sql file"
+  echo "S   - edit target sql file"
   echo "q   - quit db script"
 }
 
@@ -60,3 +68,4 @@ main
 
 alias shc='source hermit_crab.sh'
 alias vhc='vim hermit_crab.sh'
+alias vdb='vim target_db.sql'
