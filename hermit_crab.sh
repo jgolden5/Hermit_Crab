@@ -18,10 +18,10 @@ main() {
       read -p "Enter SQL command: " sql_cmd
       eval_db_command "$sql_cmd"
       ;;
-    h)
+    h|\?)
       hermit_crab_help
       ;;
-    p)
+    s)
       print_sql_file
       ;;
     q)
@@ -45,10 +45,15 @@ eval_db_command() {
 }
 
 hermit_crab_help() {
-  echo "a - print all program info"
-  echo "e - eval exact SQL command"
-  echo "h - print this help text"
-  echo "q - quit db script"
+  echo "a   - print all program info"
+  echo "e   - eval exact SQL command"
+  echo "h/? - print this help text"
+  echo "s   - print target sql file"
+  echo "q   - quit db script"
+}
+
+print_sql_file() {
+  cat target_db.sql
 }
 
 main
