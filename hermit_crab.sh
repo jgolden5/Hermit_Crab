@@ -26,6 +26,7 @@ main() {
       ;;
     S)
       edit_sql_file
+      return 0 #this is because edit_sql_file sources this file in order to apply changes to sql file
       ;;
     q)
       echo "Quitting db.sh"
@@ -44,6 +45,7 @@ select_all() {
 
 edit_sql_file() {
   vim target_db.sql
+  source hermit_crab.sh
 }
 
 eval_db_command() {
