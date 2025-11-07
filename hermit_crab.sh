@@ -8,29 +8,31 @@ rm $db_name.db 2>/dev/null
 sqlite3 $db_name.db < target_db.sql
 
 main() {
-  echo "a - print all program info"
-  echo "e - eval exact SQL command"
-  echo "q - quit db script"
   read -n1 -p "Select a db command: " cmd
   echo
   case $cmd in
     a)
       select_all
-      main
       ;;
     e)
       read -p "Enter SQL command: " sql_cmd
       eval_db_command "$sql_cmd"
-      main
+      ;;
+    h)
+      hermit_crab_help
+      ;;
+    p)
+      print_sql_file
       ;;
     q)
       echo "Quitting db.sh"
+      return 0
       ;;
     *)
       echo "command not recognized"
-      main
       ;;
   esac
+  main
 }
 
 select_all() {
@@ -42,7 +44,14 @@ eval_db_command() {
   eval 'sqlite3 bountyhunter.db "$sql_cmd"'
 }
 
+hermit_crab_help() {
+  echo "a - print all program info"
+  echo "e - eval exact SQL command"
+  echo "h - print this help text"
+  echo "q - quit db script"
+}
+
 main
 
-alias sd='source db.sh'
-alias vd='vim db.sh'
+alias shc='source hermit_crab.sh'
+alias vhc='vim hermit_crab.sh'
