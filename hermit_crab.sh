@@ -24,6 +24,9 @@ main() {
     h|\?)
       hermit_crab_help
       ;;
+    i)
+      insert_element_into_default_table
+      ;;
     p)
       print_sql_file
       ;;
@@ -76,6 +79,28 @@ hermit_crab_help() {
   echo "p   - print target sql file"
   echo "t   - set default table (for 'a' command)"
   echo "q/Q - quit db script"
+}
+
+insert_element_into_default_table() {
+  if [[ ! $default_table ]]; then
+    read -p "What do you want to use for your default table? " default_table
+    if [[ ! $default_table ]]; then
+      echo "Sorry, can't insert a column without a default table" && return 1
+    fi
+  fi
+  mapfile -t columns_in_default_table < <(awk -v tbl="$default_table" '
+    /CREATE TABLE/ { if ($0 ~ ("CREATE TABLE " tbl)) {flag=1; next} }
+    /\);/ {flag=0}
+    flag
+  ' "$schema_target.sql" | awk '{ print $1 }')
+  values_to_add=()
+  for column in "${columns_in_default_table[@]}"; do
+    read -p "What value do you want to add to the \"$column\" column in \"$default_table\" table? " val
+    echo
+    values_to_add+=("'$val'")
+  done
+  IFS=', '; columns_in_default_table="${columns_in_default_table[*]}"; values_to_add="${values_to_add[*]}"; unset IFS
+  eval_db_command "INSERT INTO $default_table ("$columns_in_default_table") VALUES ("$values_to_add")"
 }
 
 print_sql_file() {
