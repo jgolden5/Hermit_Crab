@@ -24,13 +24,13 @@ main() {
     h|\?)
       hermit_crab_help
       ;;
-    s)
+    p)
       print_sql_file
       ;;
     t)
       set_default_table
       ;;
-    q)
+    q|Q)
       echo "Quitting db.sh"
       return 0
       ;;
@@ -66,9 +66,6 @@ edit_sql_file() {
 
 eval_db_command() {
   sql_cmd="$@"
-  if [[ ! "$sql_cmd" =~ \;$ ]]; then
-    sql_cmd="${sql_cmd};"
-  fi
   eval "sqlite3 $db_name.db \"$sql_cmd;\""
 }
 
@@ -76,7 +73,7 @@ hermit_crab_help() {
   echo "a   - print all info from default table"
   echo "e   - eval exact SQL command"
   echo "h/? - print this help text"
-  echo "s   - print target sql file"
+  echo "p   - print target sql file"
   echo "t   - set default table (for 'a' command)"
   echo "q/Q - quit db script"
 }
