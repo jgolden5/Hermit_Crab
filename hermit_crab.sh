@@ -28,16 +28,16 @@ main() {
     s)
       print_sql_file
       ;;
-    S)
-      edit_sql_file
-      return 0 #this is because edit_sql_file sources this file in order to apply changes to sql file
-      ;;
     t)
       set_default_table
       ;;
     q|Q)
       echo "Quitting db.sh"
       return 0
+      ;;
+    v)
+      edit_sql_file
+      return 0 #this is because edit_sql_file sources this file in order to apply changes to sql file
       ;;
     *)
       echo "command not recognized"
@@ -51,13 +51,12 @@ select_all_from_default_table() {
 }
 
 set_default_table() {
-  read -n1 -p "Do you want to change default table? " confirm
-  echo
-  if [[ $confirm == 'y' ]]; then
-    read -p "Changing default table \"$default_table\" to " new_default
-    default_table=$new_default
+  read -p "Changing default table \"$default_table\" to " new_default
+  if [[ ! $new_default ]] || [[ $new_default =~ ^[qQ]$ ]]; then
+    echo "Ok, default table was not changed, and remains \"$default_table\""
   else
-    echo "Ok, default table remains \"$default_table\""
+    echo "Default table was changed to \"$new_default\""
+    default_table=$new_default
   fi
 }
 
@@ -67,8 +66,11 @@ edit_sql_file() {
 }
 
 eval_db_command() {
-  db_cmd="$@"
-  eval "sqlite3 $db_name.db "$sql_cmd""
+  sql_cmd="$@"
+  if [[ ! "$sql_cmd" =~ \;$ ]]; then
+    sql_cmd="${sql_cmd};"
+  fi
+  eval "sqlite3 $db_name.db \"$sql_cmd;\""
 }
 
 hermit_crab_help() {
