@@ -11,7 +11,7 @@ rm $db_name.db 2>/dev/null
 sqlite3 $db_name.db < $schema_target.sql
 
 main() {
-  read -n1 -p "Select a db command: " cmd
+  read -n1 -s -p "Select a db command: " cmd
   echo
   case $cmd in
     a)
@@ -37,9 +37,6 @@ main() {
     v)
       edit_sql_file
       return 0 #this is because edit_sql_file sources this file in order to apply changes to sql file
-      ;;
-    [A-Z])
-      echo "Good job, that was a capital letter"
       ;;
     *)
       echo "command not recognized"
@@ -77,11 +74,10 @@ eval_db_command() {
 
 hermit_crab_help() {
   echo "a   - print all info from default table"
-  echo "d   - set default table (for 'a' command)"
   echo "e   - eval exact SQL command"
   echo "h/? - print this help text"
   echo "s   - print target sql file"
-  echo "S   - edit target sql file"
+  echo "t   - set default table (for 'a' command)"
   echo "q/Q - quit db script"
 }
 
