@@ -2,6 +2,11 @@
 db_name=draft #copy to project db when this is where desired
 schema_target=schema_draft #^
 default_table=
+if [[ ! -f $schema_target.sql ]]; then
+  read -n1 -s -p "You will need to set up a schema_draft.sql file for a base schema for your database. Press any key to continue " any_key
+  echo
+  vim $schema_target.sql
+fi
 rm $db_name.db 2>/dev/null
 sqlite3 $db_name.db < $schema_target.sql
 
@@ -33,7 +38,7 @@ main() {
       edit_sql_file
       return 0 #this is because edit_sql_file sources this file in order to apply changes to sql file
       ;;
-    \[A-Z\])
+    [A-Z])
       echo "Good job, that was a capital letter"
       ;;
     *)
