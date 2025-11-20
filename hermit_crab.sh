@@ -3,7 +3,18 @@ db_name=draft #copy to project db when this is where desired
 schema_target=schema_draft #^
 default_table=
 if [[ ! -f $schema_target.sql ]]; then
-  read -n1 -s -p "You will need to set up a schema_draft.sql file for a base schema for your database. Press any key to continue " any_key
+  echo "c - copy schema_draft.sql from source file"
+  echo "s - craft schema_draft.sql from scratch"
+  read -n1 -p "Type one of the keys from above: " any_key
+  echo
+  if [[ $any_key == 'c' ]]; then
+    ls #this is, of course, to list the files/directories in current working directory for user's reference
+    read -p "Please enter the exact name of the file you want to use as template for schema_draft.sql: " file_name
+    echo
+    cat $file_name >> $schema_target.sql
+  else
+    echo "Starting from scratch"
+  fi
   echo
   vim $schema_target.sql
 fi
